@@ -5,6 +5,7 @@ import uvicorn
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.logging_config import get_logger
+from app.db import pins as pins_service
 from app.db.mongodb import mongodb
 from fastapi import FastAPI
 from fastapi import Request
@@ -88,6 +89,7 @@ async def startup_event():
         environment=settings.ENVIRONMENT,
     )
     await mongodb.connect()
+    await pins_service.create_indexes()
 
 
 @app.on_event("shutdown")
