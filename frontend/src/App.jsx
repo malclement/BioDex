@@ -140,12 +140,25 @@ export default function App() {
                   placeholder="Description"
                   className="marker-description-input"
                 />
-                <button
-                  className="delete-marker-button"
-                  onClick={() => handleMarkerDelete(marker.id)}
-                >
-                  Delete
-                </button>
+                <div className="popup-buttons">
+                  <button
+                    className="save-marker-button"
+                    onClick={() => {
+                      // Close the popup to indicate saving
+                      if (mapRef.current) {
+                        mapRef.current.closePopup();
+                      }
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="delete-marker-button"
+                    onClick={() => handleMarkerDelete(marker.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </Popup>
           </Marker>
