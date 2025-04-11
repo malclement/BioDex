@@ -173,9 +173,49 @@ html, body, #root {
   font-size: 16px; /* Prevents iOS zoom on focus */
 }
 
-/* Fix for touch targets on mobile */
-.leaflet-touch .leaflet-control-layers,
-.leaflet-touch .leaflet-bar {
-  border: none;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+/* Notification System */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease-out;
+  max-width: 90%;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.notification.success {
+  background-color: #2ecc71;
+}
+
+.notification.error {
+  background-color: #e74c3c;
+}
+
+.notification.info {
+  background-color: #3498db;
+}
+
+/* Save Button States */
+.save-marker-button.saving {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.save-marker-button:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+  opacity: 0.8;
 }

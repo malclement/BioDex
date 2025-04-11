@@ -40,14 +40,28 @@ export default function App() {
   const [markers, setMarkers] = useState([])
   const [isPlacingMarker, setIsPlacingMarker] = useState(false)
   const [activeMarker, setActiveMarker] = useState(null)
+  const [savingMarkers, setSavingMarkers] = useState({}) // Track markers being saved
+  const [notification, setNotification] = useState(null)
   const mapRef = useRef(null)
+
+  // Show notification helper
+  const showNotification = (message, type = 'info') => {
+    setNotification({ message, type });
+
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  }
 
   const handleMapClick = (latlng) => {
     const newMarker = {
       id: Date.now(), // Use timestamp as unique ID
       position: [latlng.lat, latlng.lng],
       name: `Marker ${markers.length + 1}`,
-      description: 'Click to edit description'
+      description: 'Click to edit description',
+      lat: latlng.lat,
+      lng: latlng.lng
     }
     setMarkers([...markers, newMarker])
     setIsPlacingMarker(false) // Turn off placing mode after placing
@@ -81,6 +95,12 @@ export default function App() {
 
   return (
     <div className="map-container">
+      {notification && (
+        <div className={`notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
+
       <div className="controls">
         <button
           className={`place-button ${isPlacingMarker ? 'active' : ''}`}
@@ -142,15 +162,53 @@ export default function App() {
                 />
                 <div className="popup-buttons">
                   <button
-                    className="save-marker-button"
-                    onClick={() => {
-                      // Close the popup to indicate saving
-                      if (mapRef.current) {
-                        mapRef.current.closePopup();
+                    className={`save-marker-button ${savingMarkers[marker.id] ? 'saving' : ''}`}
+                    disabled={savingMarkers[marker.id]}
+                    onClick={async () => {
+                      try {
+                        // Set saving state for this marker
+                        setSavingMarkers(prev => ({...prev, [marker.id]: true}));
+
+                        // Prepare payload
+                        const payload = {
+                          title: marker.name,
+                          description: marker.description,
+                          lat: marker.lat || marker.position[0],
+                          lng: marker.lng || marker.position[1]
+                        };
+
+                        // Call the API endpoint
+                        const response = await fetch('http://localhost:8000/pin/save', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify(payload),
+                        });
+
+                        if (response.ok) {
+                          // Remove the pin after successful save
+                          handleMarkerDelete(marker.id);
+
+                          // Show success notification instead of alert
+                          showNotification('Pin saved successfully!', 'success');
+                        } else {
+                          throw new Error('Failed to save pin');
+                        }
+                      } catch (error) {
+                        console.error('Error saving pin:', error);
+                        showNotification('Failed to save pin. Please try again.', 'error');
+                      } finally {
+                        // Clear saving state
+                        setSavingMarkers(prev => {
+                          const newState = {...prev};
+                          delete newState[marker.id];
+                          return newState;
+                        });
                       }
                     }}
                   >
-                    Save
+                    {savingMarkers[marker.id] ? 'Saving...' : 'Save'}
                   </button>
                   <button
                     className="delete-marker-button"
