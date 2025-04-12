@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import './App.css'
+import SidePanel from './SidePanel'
 
 // Fix for missing marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -95,6 +96,8 @@ export default function App() {
 
   return (
     <div className="map-container">
+      <SidePanel />
+
       {notification && (
         <div className={`notification ${notification.type}`}>
           {notification.message}
