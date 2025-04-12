@@ -1,10 +1,221 @@
-html, body, #root, .map-wrapper {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.map-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Controls Panel */
+.controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.place-button, .clear-button {
+  padding: 12px 16px;
+  border-radius: 50px;
+  border: none;
+  background-color: white;
+  color: #333;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  outline: none;
+}
+
+.place-button:hover, .clear-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.place-button.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.clear-button {
+  background-color: #f8f9fa;
+  color: #e74c3c;
+}
+
+.instruction {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  max-width: 200px;
+  text-align: center;
+}
+
+/* Marker Popup Styling */
+.marker-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+  padding: 5px;
+}
+
+.marker-name-input {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.marker-description-input {
+  min-height: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  outline: none;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.save-marker-button {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.save-marker-button:hover {
+  background-color: #27ae60;
+}
+
+.delete-marker-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.delete-marker-button:hover {
+  background-color: #c0392b;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .controls {
+    top: 10px;
+    right: 10px;
   }
 
-  .leaflet-container {
-    width: 100%;
-    height: 100%;
+  .place-button, .clear-button {
+    padding: 10px 14px;
+    font-size: 13px;
   }
+
+  .instruction {
+    font-size: 13px;
+    max-width: 150px;
+  }
+
+  .marker-popup {
+    min-width: 200px;
+  }
+}
+
+/* Fix Leaflet popup for better mobile usability */
+.leaflet-popup-content {
+  margin: 10px 10px;
+  line-height: 1.4;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+/* Make sure form elements in popups work well on mobile */
+.leaflet-popup input,
+.leaflet-popup textarea {
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* Notification System */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease-out;
+  max-width: 90%;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.notification.success {
+  background-color: #2ecc71;
+}
+
+.notification.error {
+  background-color: #e74c3c;
+}
+
+.notification.info {
+  background-color: #3498db;
+}
+
+/* Save Button States */
+.save-marker-button.saving {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.save-marker-button:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
