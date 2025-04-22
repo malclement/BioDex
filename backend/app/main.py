@@ -57,27 +57,32 @@ async def logging_middleware(request: Request, call_next):
     return response
 
 
-@app.get("/")
-async def root():
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
+
+# Setup templates directory - using a path that works in Docker
+BASE_DIR = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
     """
     Root endpoint that provides basic API information.
 
     Returns:
-        dict: Basic information about the API
+        HTMLResponse: HTML page with API information
     """
     logger.info("Root endpoint accessed")
 
-    return {
-        "name": "FastAPI Backend",
-        "version": settings.API_VERSION,
-        "environment": settings.ENVIRONMENT,
-        "description": "A FastAPI backend with MongoDB",
-        "docs_url": "/docs",
-        "health_check": "/health",
-    }
-
-
-app.include_router(api_router)
+    return templates.TemplateResponse(
+        "home.html",
+        {
+            "request": request,
+            "version": settings.API_VERSION,
+            "environment": settings.ENVIRONMENT,
+        },
+    )
 
 
 @app.on_event("startup")
