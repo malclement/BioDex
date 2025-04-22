@@ -1,5 +1,5 @@
-import logging
 import time
+from pathlib import Path
 
 import uvicorn
 from app.api.router import api_router
@@ -9,9 +9,12 @@ from app.db import pins as pins_service
 from app.db.mongodb import mongodb
 from fastapi import FastAPI
 from fastapi import Request
-from fastapi import Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+BASE_DIR = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 logger = get_logger("main")
 
@@ -28,6 +31,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router, prefix="/api")
 
 
 @app.middleware("http")
@@ -55,14 +60,6 @@ async def logging_middleware(request: Request, call_next):
     )
 
     return response
-
-
-from fastapi.templating import Jinja2Templates
-from pathlib import Path
-
-# Setup templates directory - using a path that works in Docker
-BASE_DIR = Path(__file__).resolve().parent
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
 @app.get("/", response_class=HTMLResponse)
