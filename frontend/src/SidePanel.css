@@ -51,4 +51,18 @@
     padding: 20px;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .panel-logo {
+    width: 90%;
+    max-width: 250px;
+    height: auto;
   }

@@ -127,6 +127,7 @@ export default function App() {
         center={[48.8566, 2.3522]} // Paris coords
         zoom={13}
         scrollWheelZoom={true}
+        zoomControl={false}
         style={{ height: '100%', width: '100%' }}
         ref={mapRef}
       >
