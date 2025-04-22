@@ -19,17 +19,17 @@ async def create_pin(pin: PinCreate) -> PinInDB:
         The created pin
     """
     pin_data = pin.model_dump()
-    pin_data["created_at"] = datetime.utcnow()
-    pin_data["updated_at"] = datetime.utcnow()
+    now = datetime.utcnow()
+    pin_data["created_at"] = now
+    pin_data["updated_at"] = now
 
     result = await mongodb.db.pins.insert_one(pin_data)
 
-    # Get the created pin
-    created_pin = await mongodb.db.pins.find_one({"_id": result.inserted_id})
+    pin_data["_id"] = result.inserted_id
 
     logger.info("Pin created in database", pin_id=str(result.inserted_id))
 
-    return PinInDB.from_mongo(created_pin)
+    return PinInDB.from_mongo(pin_data)
 
 
 async def create_indexes():

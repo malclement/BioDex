@@ -182,7 +182,7 @@ export default function App() {
                         };
 
                         // Call the API endpoint
-                        const response = await fetch('http://localhost:8000/pins', {
+                        const response = await fetch('http://localhost:8000/api/pins', {
                           method: 'POST',
                           headers: {
                             'Content-Type': 'application/json',
