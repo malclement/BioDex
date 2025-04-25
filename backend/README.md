@@ -5,6 +5,7 @@ fastapi-backend/
 ├── app/
 │   ├── api/
 │   │   ├── endpoints/
+│   │   │   ├── animals.py
 │   │   │   └── health.py
 │   │   └── router.py
 │   ├── core/
